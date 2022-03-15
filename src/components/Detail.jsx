@@ -194,10 +194,10 @@ function Detail() {
                                             {a.text}
 
                                             
-                                           
+                                            <button className='btn btn-outline text-right btn-sm' onClick={()=>handleVote(a)}>{a.like_user.includes(auth.currentUser.uid) ? 'Unvote':'Vote' }</button>
              
                                         </div>
-                                        <button className='btn btn-outline text-right btn-sm' onClick={()=>handleVote(a)}>{a.like_user.includes(auth.currentUser.uid) ? 'Unvote':'Vote' }</button>
+                                      
                                       
                                     </div>
                                 )
