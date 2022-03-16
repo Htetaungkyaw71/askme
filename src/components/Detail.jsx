@@ -5,6 +5,7 @@ import {useParams,useNavigate} from "react-router-dom"
 import { toast } from 'react-toastify'
 import Spinner from './Spinner'
 import {getAuth,onAuthStateChanged} from "firebase/auth"
+import { v4 as uuidv4 } from 'uuid';
 
 
 
@@ -19,6 +20,7 @@ function Detail() {
     const navigate = useNavigate()
 
     const [comment,setComment] = useState({
+        id:"",
         text:"",
         vote:0,
         like_user:[],
@@ -104,19 +106,25 @@ function Detail() {
    
     const handleSubmit = async(e) =>{
         e.preventDefault()
-        const postcopy = {...post}
-        postcopy.answers.push(comment)
-
-                
-        const docref = doc(db,"posts",params.postId)
-        await updateDoc(docref,postcopy)
-        setComment(prev=>{
-                return {
-                    ...prev,
-                    'text':"",
-                }
-            })
-        navigate(`/detail/${params.postId}`)
+        if(comment.text !== ""){
+            const postcopy = {...post}
+            postcopy.answers.push(comment)
+    
+                    
+            const docref = doc(db,"posts",params.postId)
+            await updateDoc(docref,postcopy)
+            setComment(prev=>{
+                    return {
+                        ...prev,
+                        'text':"",
+                    }
+                })
+            navigate(`/detail/${params.postId}`)
+        }
+        else{
+            toast.error('you need to fill the answer')
+        }
+   
       
     }
 
@@ -124,6 +132,7 @@ function Detail() {
         setComment(prev=>{
             return {
                 ...prev,
+                'id':uuidv4(),
                 'text':e.target.value,
             }
         })
@@ -185,7 +194,7 @@ function Detail() {
                         <div>
                             {post.answers.sort((a, b) => b.vote - a.vote).map(a=>{
                                 return (
-                                    <div key={a.text} className='mt-5'>
+                                    <div key={a.id} className='mt-5'>
                                            <span className='text-lg font-semibold underline'>
                                            { a.vote > 1 ?  <span className="link"> { a.vote} votes </span>  :<span className="link "> {a.vote} vote </span>}
                                             </span>
